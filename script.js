@@ -5,12 +5,51 @@ let giveupbutton=document.getElementById("giveUpBtn");
 let message=document.getElementById("msg");
 let winMessage=document.getElementById("wins")
 let avgMessage=document.getElementById("avgScore")
+let guessMesage=document.getElementById("guess")
 let guess=NaN;
 let answer=NaN;
 let guessCount=0;
 let scores=[];
 let range=0;
 let warmth=""
+
+function updateScore(score){
+    scores.push(score)
+    winMessage.textContent="Total wins: "+scores.length
+    avgMessage.textContent=avg(scores).toFixed(0)
+    scores.sort(function(a,b){return a-b;})
+    let lb=document.getElementsByName("leaderboard")
+    for (let i=0; i<lb.length; i++)
+    {
+        if (i<scores.length)
+        {
+            lb[i].textContent=scores[i];
+        }
+    }
+}
+function avg(data)
+{
+    let average=0;
+    for (let i=0; i<data.length; i++)
+    {
+        average+=data[i];
+    }
+    return average/data.length;
+}
+function resetGame()
+{
+guessCount=0;
+guessbutton.disabled=true;
+giveupbutton.disabled=true;
+guessMesage.value="";
+let levels=document.getElementsByName('level');
+for (let i=0; i<levels.length;i++)
+{
+    levels[i].disabled=false;
+}
+playbutton.disabled=false;
+
+}
 function Play()
 {
 let levels=document.getElementsByName('level');
@@ -27,12 +66,8 @@ for (let i=0; i<levels.length;i++)
 message.textContent="Guess a number between 1 and "+range;
 answer=Math.floor(Math.random() * range) + 1;
 guessbutton.disabled=false;
-giveupbutton.disable=false;
+giveupbutton.disabled=false;
 guesscount=0;
-if (guess===answer)
-{
-    alert("hiii")
-}
 }
 playbutton.addEventListener("click", Play)
 guessbutton.addEventListener("click", makeGuess)
@@ -58,9 +93,9 @@ else
 }
 if (guess==answer)
 {
-    message.textContent="Correct! It took "+guessCount+" tries.";
+    message.textContent="Correct! It took "+guessCount+" tries. Play again?";
     updateScore(guessCount);
-    reset();
+    resetGame();
 }
 else if (guess<answer)
 {
@@ -69,24 +104,4 @@ else if (guess<answer)
 else{
     message.textContent="Too high, try again. You are "+warmth+"."
 }
-}
-function updateScore(score){
-    scores.push(score)
-    winMessage.textContent="Total wins: "+scores.length
-    avgMessage.textContent=avg(scores).toFixed(0)
-    
-
-}
-function avg(data)
-{
-    let average=0;
-    for (let i=0; i<data.length; i++)
-    {
-        average+=data[i];
-    }
-    return average/data.length;
-}
-function reset()
-{
-    
 }

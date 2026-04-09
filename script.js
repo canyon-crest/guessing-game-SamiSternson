@@ -1,5 +1,9 @@
 let name=prompt("Please enter your name").toLowerCase();
 name=name[0].toUpperCase()+name.slice(1)
+
+let current_red=243;
+let current_green=232;
+let current_blue=144;
 let playButton=document.getElementById("playBtn");
 let guessButton=document.getElementById("guessBtn");
 let giveUpButton=document.getElementById("giveUpBtn");
@@ -31,7 +35,7 @@ function timeUpdater()
     let seconds=dateObject.getSeconds()
     let months=["January", "February", "March", "April", "May", "June", "July", "August", "September","October", "November", "December" ]
     let suffexs =["st", "nd", 'rd', "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th", "th", "st"]
-    date.textContent=months[month]+" "+day+suffexs[day]+" "+year+" "+ hours+":"+minutes+":"+seconds;
+    date.textContent=months[month]+" "+day+suffexs[day]+" "+year+" "+ String(hours).padStart(2, '0')+":"+String(minutes).padStart(2, '0')+":"+String(seconds).padStart(2, '0');
 }
 function updateScore(score){
     scores.push(score)
@@ -74,10 +78,11 @@ function resetGame()
         levels[i].disabled=false;
     }
     playButton.disabled=false;
-
+    
 }
 function Play()
 {
+    document.body.style.backgroundColor="rgb(243, 232, 144)";
     let levels=document.getElementsByName('level');
     startTime=new Date().getTime()
     playButton.disabled=true;
@@ -110,18 +115,31 @@ function makeGuess() {
     if (Math.abs(answer-guess)>5)
     {
         warmth="cold"
+        current_red+=20;
+        current_blue-=10;
+        current_green-=20;
+        document.body.style.backgroundColor=`rgb(${current_red}, ${current_green}, ${current_blue})`;
     }
     else if (Math.abs(answer-guess)>2)
     {
         warmth="warm"
+        current_red-=40;
+        current_blue-=10;
+        current_green+=40;
+        document.body.style.backgroundColor=`rgb(${current_red}, ${current_green}, ${current_blue})`;
     }
     else
     {
+        current_red-=80;
+        current_blue-=10;
+        current_green+=80;
+        document.body.style.backgroundColor=`rgb(${current_red}, ${current_green}, ${current_blue})`;
         warmth="hot"
     }
     if (guess==answer)
     {
         message.textContent="Good job "+name+"! You got it correct! It took "+guessCount+" tries. Play again?";
+        document.body.style.backgroundColor="rgb(59, 208, 59)";
         updateScore(guessCount);
         resetGame();
     }
@@ -135,6 +153,7 @@ function makeGuess() {
 }
 function giveUp()
 {
+    document.body.style.backgroundColor="rgb(172, 48, 48)";
     scores.push(range)
     message.textContent=name+", you gave up :(  Play Again?"
     winMessage.textContent="Total wins: "+scores.length

@@ -1,0 +1,1 @@
+1) Based on how close you are to the answer (hot, warm, cold, etc)

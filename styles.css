@@ -1,0 +1,4 @@
+body{
+    background-color: rgb(243, 232, 144);
+    transition: background-color 0.5s ease;
+}

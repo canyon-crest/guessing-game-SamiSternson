@@ -1,23 +1,29 @@
-let name=prompt("Please enter your name");
-let playbutton=document.getElementById("playBtn");
-let guessbutton=document.getElementById("guessBtn");
-let giveupbutton=document.getElementById("giveUpBtn");
+let name=prompt("Please enter your name").toLowerCase();
+name=name[0].toUpperCase()+name.slice(1)
+let playButton=document.getElementById("playBtn");
+let guessButton=document.getElementById("guessBtn");
+let giveUpButton=document.getElementById("giveUpBtn");
 let message=document.getElementById("msg");
 let winMessage=document.getElementById("wins")
 let avgMessage=document.getElementById("avgScore")
 let guessMesage=document.getElementById("guess")
+let avgTimeMessage=document.getElementById("avgTime")
+let fastestTimeMessage=document.getElementById("fastest")
 let guess=NaN;
 let answer=NaN;
 let guessCount=0;
 let scores=[];
+let times=[]
 let range=0;
 let warmth=""
-
+let startTime=0;
 function updateScore(score){
     scores.push(score)
+    times.push((new Date().getTime()-startTime)/1000)
     winMessage.textContent="Total wins: "+scores.length
-    avgMessage.textContent=avg(scores).toFixed(0)
-    scores.sort(function(a,b){return a-b;})
+    avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
+    scores.sort(function(a,b){return a-b;});
+    times.sort(function(a,b){return a-b;});
     let lb=document.getElementsByName("leaderboard")
     for (let i=0; i<lb.length; i++)
     {
@@ -26,6 +32,10 @@ function updateScore(score){
             lb[i].textContent=scores[i];
         }
     }
+    fastestTimeMessage.textContent="Fastest Game: "+times[0].toFixed(3)+" seconds."
+    avgTimeMessage.textContent="Average Time: "+avg(times).toFixed(3)+ " seconds."
+
+
 }
 function avg(data)
 {
@@ -38,70 +48,89 @@ function avg(data)
 }
 function resetGame()
 {
-guessCount=0;
-guessbutton.disabled=true;
-giveupbutton.disabled=true;
-guessMesage.value="";
-let levels=document.getElementsByName('level');
-for (let i=0; i<levels.length;i++)
-{
-    levels[i].disabled=false;
-}
-playbutton.disabled=false;
+    guessCount=0;
+    guessButton.disabled=true;
+    giveUpButton.disabled=true;
+    guessMesage.value="";
+    let levels=document.getElementsByName('level');
+    for (let i=0; i<levels.length;i++)
+    {
+        levels[i].disabled=false;
+    }
+    playButton.disabled=false;
 
 }
 function Play()
 {
-let levels=document.getElementsByName('level');
-playbutton.disabled=true;
+    let levels=document.getElementsByName('level');
+    startTime=new Date().getTime()
+    playButton.disabled=true;
 
-for (let i=0; i<levels.length;i++)
-{
-    if (levels[i].checked)
+    for (let i=0; i<levels.length;i++)
     {
-        range=parseInt(levels[i].value)
+        if (levels[i].checked)
+        {
+            range=parseInt(levels[i].value)
+        }
+        levels[i].disabled=true;
     }
-    levels[i].disabled=true;
+    message.textContent="Guess a number between 1 and "+range;
+    answer=Math.floor(Math.random() * range) + 1;
+    guessButton.disabled=false;
+    giveUpButton.disabled=false;
+    guesscount=0;
 }
-message.textContent="Guess a number between 1 and "+range;
-answer=Math.floor(Math.random() * range) + 1;
-guessbutton.disabled=false;
-giveupbutton.disabled=false;
-guesscount=0;
-}
-playbutton.addEventListener("click", Play)
-guessbutton.addEventListener("click", makeGuess)
+playButton.addEventListener("click", Play)
+guessButton.addEventListener("click", makeGuess)
+giveUpButton.addEventListener("click", giveUp)
 function makeGuess() {
-guess=parseInt(document.getElementById("guess").value);
-if (isNaN(guess)||guess<1||guess>range)
-{
-    message.textContent="Please pick a valid number"
-    return;
+    guess=parseInt(document.getElementById("guess").value);
+    if (isNaN(guess)||guess<1||guess>range)
+    {
+        message.textContent="Please pick a valid number"
+        return;
+    }
+    guessCount++;
+    if (Math.abs(answer-guess)>5)
+    {
+        warmth="cold"
+    }
+    else if (Math.abs(answer-guess)>2)
+    {
+        warmth="warm"
+    }
+    else
+    {
+        warmth="hot"
+    }
+    if (guess==answer)
+    {
+        message.textContent="Good job "+name+"! You got it correct! It took "+guessCount+" tries. Play again?";
+        updateScore(guessCount);
+        resetGame();
+    }
+    else if (guess<answer)
+    {
+        message.textContent="Too low, try again. You are "+warmth+"." 
+    }
+    else{
+        message.textContent="Too high, try again. You are "+warmth+"."
+    }
 }
-guessCount++;
-if (Math.abs(answer-guess)>range/3)
+function giveUp()
 {
-    warmth="cold"
-}
-else if (Math.abs(answer-guess)>range/4)
-{
-    warmth="warm"
-}
-else
-{
-    warmth="hot"
-}
-if (guess==answer)
-{
-    message.textContent="Correct! It took "+guessCount+" tries. Play again?";
-    updateScore(guessCount);
+    scores.push(range)
+    message.textContent=name+", you gave up :(  Play Again?"
+    winMessage.textContent="Total wins: "+scores.length
+    avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
+    scores.sort(function(a,b){return a-b;});
+    let lb=document.getElementsByName("leaderboard")
+    for (let i=0; i<lb.length; i++)
+    {
+        if (i<scores.length)
+        {
+            lb[i].textContent=scores[i];
+        }
+    }
     resetGame();
-}
-else if (guess<answer)
-{
-    message.textContent="Too low, try again. You are "+warmth+"." 
-}
-else{
-    message.textContent="Too high, try again. You are "+warmth+"."
-}
 }

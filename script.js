@@ -9,6 +9,7 @@ let avgMessage=document.getElementById("avgScore")
 let guessMesage=document.getElementById("guess")
 let avgTimeMessage=document.getElementById("avgTime")
 let fastestTimeMessage=document.getElementById("fastest")
+let date=document.getElementById("date");
 let guess=NaN;
 let answer=NaN;
 let guessCount=0;
@@ -17,6 +18,21 @@ let times=[]
 let range=0;
 let warmth=""
 let startTime=0;
+timeUpdater()
+let timeUpdate=setInterval(timeUpdater, 1000);
+function timeUpdater()
+{
+    let dateObject= new Date()
+    let day= dateObject.getDate()
+    let month= dateObject.getMonth()
+    let year =dateObject.getFullYear()
+    let hours= dateObject.getHours()
+    let minutes=dateObject.getMinutes()
+    let seconds=dateObject.getSeconds()
+    let months=["January", "February", "March", "April", "May", "June", "July", "August", "September","October", "November", "December" ]
+    let suffexs =["st", "nd", 'rd', "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th", "th", "st"]
+    date.textContent=months[month]+" "+day+suffexs[day]+" "+year+" "+ hours+":"+minutes+":"+seconds;
+}
 function updateScore(score){
     scores.push(score)
     times.push((new Date().getTime()-startTime)/1000)
@@ -74,7 +90,7 @@ function Play()
         }
         levels[i].disabled=true;
     }
-    message.textContent="Guess a number between 1 and "+range;
+    message.textContent=name+", Guess a number between 1 and "+range;
     answer=Math.floor(Math.random() * range) + 1;
     guessButton.disabled=false;
     giveUpButton.disabled=false;

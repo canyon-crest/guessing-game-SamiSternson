@@ -28,8 +28,15 @@ let times=[]
 let range=0;
 let warmth=""
 let startTime=0;
+
 timeUpdater()
 let timeUpdate=setInterval(timeUpdater, 1000);
+const clapping=new Audio("clapping.wav");
+function Clap()
+{
+    clapping.currentTime=0;
+    clapping.play()
+}
 function timeUpdater()
 {
     let dateObject= new Date()
@@ -145,6 +152,7 @@ function makeGuess() {
     {
         message.textContent="Good job "+name+"! You got it correct! It took "+guessCount+" tries. Play again?";
         document.body.style.backgroundColor="rgb(59, 208, 59)";
+        Clap()
         updateScore(guessCount);
         resetGame();
     }

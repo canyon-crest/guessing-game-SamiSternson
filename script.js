@@ -1,8 +1,9 @@
 let name=""
 while (name==""){
+    name=prompt("Please enter your name")
     if (name!="")
     {
-    name=prompt("Please enter your name").toLowerCase();
+    name=name.toLowerCase();
     name=name[0].toUpperCase()+name.slice(1)
     }
 }

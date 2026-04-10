@@ -152,6 +152,9 @@ function makeGuess() {
     {
         message.textContent="Good job "+name+"! You got it correct! It took "+guessCount+" tries. Play again?";
         document.body.style.backgroundColor="rgb(59, 208, 59)";
+        current_red=243;
+    current_green=232;
+    current_blue=144;
         Clap()
         updateScore(guessCount);
         resetGame();

@@ -1,6 +1,11 @@
-let name=prompt("Please enter your name").toLowerCase();
-name=name[0].toUpperCase()+name.slice(1)
-
+let name=""
+while (name==""){
+    if (name!="")
+    {
+    name=prompt("Please enter your name").toLowerCase();
+    name=name[0].toUpperCase()+name.slice(1)
+    }
+}
 let current_red=243;
 let current_green=232;
 let current_blue=144;
@@ -22,6 +27,7 @@ let times=[]
 let range=0;
 let warmth=""
 let startTime=0;
+let numGiveUps=0;
 timeUpdater()
 let timeUpdate=setInterval(timeUpdater, 1000);
 function timeUpdater()
@@ -40,7 +46,8 @@ function timeUpdater()
 function updateScore(score){
     scores.push(score)
     times.push((new Date().getTime()-startTime)/1000)
-    winMessage.textContent="Total wins: "+scores.length
+
+    winMessage.textContent="Total wins: "+(scores.length-numGiveUps)
     avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
     scores.sort(function(a,b){return a-b;});
     times.sort(function(a,b){return a-b;});
@@ -101,9 +108,7 @@ function Play()
     giveUpButton.disabled=false;
     guesscount=0;
 }
-playButton.addEventListener("click", Play)
-guessButton.addEventListener("click", makeGuess)
-giveUpButton.addEventListener("click", giveUp)
+
 function makeGuess() {
     guess=parseInt(document.getElementById("guess").value);
     if (isNaN(guess)||guess<1||guess>range)
@@ -115,9 +120,9 @@ function makeGuess() {
     if (Math.abs(answer-guess)>5)
     {
         warmth="cold"
-        current_red+=20;
+        current_red+=40;
         current_blue-=10;
-        current_green-=20;
+        current_green-=40;
         document.body.style.backgroundColor=`rgb(${current_red}, ${current_green}, ${current_blue})`;
     }
     else if (Math.abs(answer-guess)>2)
@@ -155,8 +160,9 @@ function giveUp()
 {
     document.body.style.backgroundColor="rgb(172, 48, 48)";
     scores.push(range)
+        numGiveUps+=1
     message.textContent=name+", you gave up :(  Play Again?"
-    winMessage.textContent="Total wins: "+scores.length
+    winMessage.textContent="Total wins: "+(scores.length-numGiveUps);
     avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
     scores.sort(function(a,b){return a-b;});
     let lb=document.getElementsByName("leaderboard")
@@ -169,3 +175,20 @@ function giveUp()
     }
     resetGame();
 }
+playButton.addEventListener("click", Play)
+guessButton.addEventListener("click", makeGuess)
+giveUpButton.addEventListener("click", giveUp)
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter' && playButton.disabled) {
+    makeGuess()
+  }
+  else if (event.key==="p" && !playButton.disabled)
+    {
+        Play()
+    }
+else if (event.key=="g" && playButton.disabled)
+{
+    giveUp()
+}
+  
+});

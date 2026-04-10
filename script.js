@@ -28,7 +28,6 @@ let times=[]
 let range=0;
 let warmth=""
 let startTime=0;
-let numGiveUps=0;
 timeUpdater()
 let timeUpdate=setInterval(timeUpdater, 1000);
 function timeUpdater()
@@ -48,7 +47,7 @@ function updateScore(score){
     scores.push(score)
     times.push((new Date().getTime()-startTime)/1000)
 
-    winMessage.textContent="Total wins: "+(scores.length-numGiveUps)
+    winMessage.textContent="Total wins: "+scores.length
     avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
     scores.sort(function(a,b){return a-b;});
     times.sort(function(a,b){return a-b;});
@@ -160,10 +159,9 @@ function makeGuess() {
 function giveUp()
 {
     document.body.style.backgroundColor="rgb(172, 48, 48)";
-    scores.push(range)
-        numGiveUps+=1
+    scores.push(range);
     message.textContent=name+", you gave up :(  Play Again?"
-    winMessage.textContent="Total wins: "+(scores.length-numGiveUps);
+    winMessage.textContent="Total wins: "+scores.length
     avgMessage.textContent="Average Score: "+avg(scores).toFixed(1)
     scores.sort(function(a,b){return a-b;});
     let lb=document.getElementsByName("leaderboard")
